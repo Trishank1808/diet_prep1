@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DietPrep</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">Diet<span>Prep</span></div>
+  <div class="header-right">
+    <div class="streak-chip" id="nav-streak">🔥 0 days</div>
+    <div class="avatar-chip">
+      <div class="avatar-circle" id="user-avatar-letter">?</div>
+      <span class="avatar-name" id="nav-name">You</span>
+    </div>
+  </div>
+</header>
+
+<!-- SCROLL AREA -->
+<div class="scroll-area">
+
+<!-- ── ONBOARDING ── -->
+<div class="page active" id="page-onboard">
+  <div class="ob-wrap">
+    <div class="ob-hero">
+      <div class="ob-icon">🥗</div>
+      <div class="ob-title">Diet<span>Prep</span></div>
+      <div class="ob-sub">Built for Indian college life</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Set up your profile</div>
+      <div class="form-row">
+        <div class="fg"><label>Your name</label><input type="text" id="ob-name" value="Trishank" placeholder="Trishank / Akshaya..." /></div>
+        <div class="fg"><label>Age</label><input type="number" id="ob-age" value="21" min="15" max="60" /></div>
+        <div class="fg"><label>Weight (kg)</label><input type="number" id="ob-weight" value="65" min="30" max="200" /></div>
+        <div class="fg"><label>Height (cm)</label><input type="number" id="ob-height" value="170" min="100" max="220" /></div>
+      </div>
+      <div class="fg"><label>Activity level</label>
+        <select id="ob-activity">
+          <option value="1.2">Sedentary (mostly sitting)</option>
+          <option value="1.375" selected>Lightly active (college commute)</option>
+          <option value="1.55">Moderately active (gym 3–4×/week)</option>
+          <option value="1.725">Very active (daily intense training)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Your goal</label>
+        <div class="goal-row">
+          <div class="goal-card selected" id="goal-loss" onclick="selectGoal('loss')"><div class="goal-emoji">⬇️</div><div class="goal-name">Lose weight</div></div>
+          <div class="goal-card" id="goal-gain" onclick="selectGoal('gain')"><div class="goal-emoji">💪</div><div class="goal-name">Gain muscle</div></div>
+          <div class="goal-card" id="goal-maintain" onclick="selectGoal('maintain')"><div class="goal-emoji">⚖️</div><div class="goal-name">Maintain</div></div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Start tracking →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div class="page" id="page-dashboard">
+
+  <!-- Ring hero -->
+  <div class="ring-hero">
+    <div class="ring-wrap">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
+        <circle id="ring-arc" cx="55" cy="55" r="46" fill="none" stroke="url(#rg)" stroke-width="10"
+          stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" style="transition:stroke-dashoffset 0.8s cubic-bezier(.4,0,.2,1);"/>
+        <defs>
+          <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#FF6B00"/>
+            <stop offset="100%" stop-color="#FFB347"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="ring-pct">0%</div>
+        <div class="ring-pct-label">of goal</div>
+      </div>
+    </div>
+    <div class="ring-info">
+      <div class="ring-greeting" id="dash-greeting">Good morning! 👋</div>
+      <div class="ring-row">
+        <div class="ring-stat">
+          <div class="ring-stat-val" id="d-cal-today">0 <span style="font-size:11px;opacity:0.6;">kcal</span></div>
+          <div class="ring-stat-label">Eaten</div>
+        </div>
+        <div class="ring-stat">
+          <div class="ring-stat-val" id="d-cal-remain-h">— <span style="font-size:11px;opacity:0.6;">kcal</span></div>
+          <div class="ring-stat-label">Left</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.4);" id="dash-date"></div>
+    </div>
+  </div>
+
+  <!-- Bento grid -->
+  <div class="bento">
+    <div class="bento-card bento-accent-saffron">
+      <div class="bento-icon">🔥</div>
+      <div class="bento-val" id="d-streak-big">0</div>
+      <div class="bento-label">Day streak</div>
+      <div class="streak-row" id="d-streak-dots"></div>
+    </div>
+    <div class="bento-card bento-accent-mint">
+      <div class="bento-icon">⚖️</div>
+      <div class="bento-val" id="bmi-val">—</div>
+      <div class="bento-label" id="bmi-cat">BMI</div>
+      <div class="bmi-scale" style="margin-top:10px;">
+        <div class="bmi-seg" style="background:#5dcaa5;"></div>
+        <div class="bmi-seg" style="background:#00c9a7;"></div>
+        <div class="bmi-seg" style="background:#f59e0b;"></div>
+        <div class="bmi-seg" style="background:#f43f5e;"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);" id="bmi-msg">Set up profile first</div>
+    </div>
+    <div class="bento-card" style="grid-column:span 2;">
+      <div class="card-label">Today's target</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+        <span id="d-cal-consumed-b" style="color:var(--text);font-weight:600;">0 kcal</span>
+        <span id="d-cal-target" style="color:var(--text3);">of 2000 kcal</span>
+      </div>
+      <div class="pbar-wrap"><div class="pbar ok" id="d-cal-bar" style="width:0%;"></div></div>
+      <div style="font-size:11px;color:var(--text3);" id="d-cal-pct-b">0% of daily goal</div>
+    </div>
+  </div>
+
+  <!-- Badges -->
+  <div class="card">
+    <div class="card-label">Achievements</div>
+    <div class="badge-row" id="d-badges"></div>
+  </div>
+
+  <!-- Edit profile -->
+  <div style="text-align:center;padding-bottom:4px;">
+    <button class="btn btn-ghost btn-sm" onclick="goto('onboard')">Edit profile</button>
+  </div>
+</div>
+
+<!-- ── FOOD LOG ── -->
+<div class="page" id="page-food">
+  <div class="section-heading">Food <span>Log</span></div>
+
+  <div class="card">
+    <div class="card-label">Add a meal</div>
+    <div class="form-row" style="margin-bottom:12px;">
+      <div class="fg" style="margin-bottom:0;"><label>Meal</label>
+        <select id="meal-type"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select>
+      </div>
+      <div class="fg search-wrap" style="margin-bottom:0;"><label>Search food</label>
+        <input type="text" id="food-search" placeholder="Dal, roti, dosa…" oninput="searchFood(this.value)" autocomplete="off" />
+        <div class="search-results" id="food-results" style="display:none;"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+      <div class="fg" style="margin-bottom:0;width:90px;"><label>Qty (g)</label><input type="number" id="food-qty" value="100" min="1" oninput="updateSelectedFoodCalories()" /></div>
+      <div class="fg" style="margin-bottom:0;flex:1;min-width:110px;"><label>Calories</label><input type="number" id="food-cal-manual" placeholder="kcal" /></div>
+      <div class="fg" style="margin-bottom:0;flex:1;min-width:110px;"><label>Food name (manual)</label><input type="text" id="food-name-manual" placeholder="Custom food" /></div>
+      <button class="btn btn-primary" onclick="addFoodLog()" style="height:42px;padding:10px 16px;">+ Add</button>
+    </div>
+  </div>
+
+  <!-- Macro pills -->
+  <div class="macro-row">
+    <div class="macro-pill"><div class="macro-pill-val" id="macro-protein" style="color:var(--mint);">0g</div><div class="macro-pill-label">Protein</div></div>
+    <div class="macro-pill"><div class="macro-pill-val" id="macro-carbs" style="color:var(--sky);">0g</div><div class="macro-pill-label">Carbs</div></div>
+    <div class="macro-pill"><div class="macro-pill-val" id="macro-fat" style="color:var(--saffron);">0g</div><div class="macro-pill-label">Fat</div></div>
+    <div class="macro-pill"><div class="macro-pill-val" id="food-total-cal" style="color:var(--rose);">0</div><div class="macro-pill-label">kcal total</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-label">Today's log</div>
+    <div id="food-log-list"><div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">Nothing logged yet — add your first meal above</div></div>
+  </div>
+</div>
+
+<!-- ── WORKOUT ── -->
+<div class="page" id="page-workout">
+  <div class="section-heading">Work<span>out</span></div>
+
+  <div class="burned-card">
+    <div>
+      <div class="burned-val" id="workout-burned">0 kcal</div>
+      <div class="burned-label">Burned today</div>
+    </div>
+    <div style="font-size:48px;opacity:0.4;">🔥</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Log exercise</div>
+    <div class="fg"><label>Exercise</label>
+      <select id="ex-select">
+        <option value="Push-ups|bodyweight">Push-ups</option>
+        <option value="Pull-ups|bodyweight">Pull-ups</option>
+        <option value="Squats|bodyweight">Squats</option>
+        <option value="Deadlift|barbell">Deadlift</option>
+        <option value="Bench Press|barbell">Bench Press</option>
+        <option value="Overhead Press|barbell">Overhead Press</option>
+        <option value="Dumbbell Curl|dumbbell">Dumbbell Curl</option>
+        <option value="Lat Pulldown|machine">Lat Pulldown</option>
+        <option value="Running|cardio">Running</option>
+        <option value="Cycling|cardio">Cycling</option>
+        <option value="Skipping|cardio">Skipping</option>
+        <option value="Yoga|flexibility">Yoga</option>
+        <option value="Surya Namaskar|flexibility">Surya Namaskar</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Sets</label><input type="number" id="ex-sets" value="3" min="1" max="20" /></div>
+      <div class="fg"><label>Reps / Duration</label><input type="text" id="ex-reps" placeholder="12 / 30 min" value="12" /></div>
+    </div>
+    <div class="fg"><label>Weight kg (optional)</label><input type="number" id="ex-weight" placeholder="Bodyweight if blank" /></div>
+    <button class="btn btn-primary btn-block" onclick="addExercise()">+ Log exercise</button>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Today's exercises</div>
+    <div id="workout-list"><div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">No exercises yet — log your first set above</div></div>
+  </div>
+</div>
+
+<!-- ── PROGRESS ── -->
+<div class="page" id="page-progress">
+  <div class="section-heading">Pro<span>gress</span></div>
+
+  <div class="card">
+    <div class="card-label">Log weight</div>
+    <div style="display:flex;gap:10px;align-items:flex-end;">
+      <div class="fg" style="margin:0;flex:1;"><label>Today's weight (kg)</label><input type="number" id="weight-input" placeholder="68.5" step="0.1" /></div>
+      <button class="btn btn-mint" onclick="logWeight()" style="height:42px;">Save</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Weight trend — last 10 entries</div>
+    <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Calories vs target — last 7 days</div>
+    <div class="chart-wrap"><canvas id="calChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ── AI REPORT ── -->
+<div class="page" id="page-report">
+  <div class="section-heading">AI <span>Report</span></div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">Weekly health insights</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;">Claude AI analyses your calorie trends, workout consistency, and macro balance — and gives advice tailored to Indian foods.</div>
+    <button class="btn btn-primary" id="report-btn" onclick="generateReport()">✨ Generate my report</button>
+  </div>
+  <div id="report-container"></div>
+</div>
+
+<!-- ── ADMIN ── -->
+<div class="page" id="page-admin">
+  <div class="section-heading">Food <span>DB</span></div>
+  <div class="card">
+    <div class="card-label">Add food</div>
+    <div class="form-row">
+      <div class="fg"><label>Food name</label><input type="text" id="admin-food-name" placeholder="e.g. Moong Dal" /></div>
+      <div class="fg"><label>Calories / 100g</label><input type="number" id="admin-cal" placeholder="116" /></div>
+      <div class="fg"><label>Protein (g)</label><input type="number" id="admin-protein" placeholder="8" /></div>
+      <div class="fg"><label>Carbs (g)</label><input type="number" id="admin-carbs" placeholder="20" /></div>
+      <div class="fg"><label>Fat (g)</label><input type="number" id="admin-fat" placeholder="0.5" /></div>
+      <div class="fg"><label>Type</label><select id="admin-type"><option value="veg">Vegetarian</option><option value="non">Non-veg</option></select></div>
+    </div>
+    <button class="btn btn-primary" onclick="adminAddFood()">Add to database</button>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div class="card-label" style="margin:0;">Database — <span id="food-count">0</span> items</div>
+      <input type="text" placeholder="Search…" style="width:160px;" oninput="adminFilter(this.value)" id="admin-search" />
+    </div>
+    <div id="admin-food-list"></div>
+  </div>
+</div>
+
+</div><!-- end scroll-area -->
+
+<!-- BOTTOM TAB BAR -->
+<nav class="tabbar">
+  <button class="tab-btn active" onclick="goto('dashboard')"><span class="tab-icon">⊞</span>Home</button>
+  <button class="tab-btn" onclick="goto('food')"><span class="tab-icon">🍛</span>Food</button>
+  <button class="tab-btn" onclick="goto('workout')"><span class="tab-icon">🏋️</span>Workout</button>
+  <button class="tab-btn" onclick="goto('progress')"><span class="tab-icon">📈</span>Progress</button>
+  <button class="tab-btn" onclick="goto('report')"><span class="tab-icon">🤖</span>AI</button>
+  <button class="tab-btn" onclick="goto('admin')"><span class="tab-icon">⚙️</span>Admin</button>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
