@@ -2,14 +2,13 @@
 // DietPrep — Frontend logic, now talking to the Python backend API
 // ═══════════════════════════════════════════════════════════════
 
-// Auto-detect API endpoint: local dev or deployed
 const API_BASE = (() => {
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   if (isLocal) {
     return 'http://127.0.0.1:8000/api';
   }
-  // For deployed version, assume backend is at same origin
-  return `${window.location.origin}/api`;
+  // Change the fallback to your new Render URL!
+  return 'https://dietprep-backend.onrender.com/api';
 })();
 
 // ── IN-MEMORY STATE (hydrated from backend on load) ─────────────
