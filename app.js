@@ -8,7 +8,7 @@ const API_BASE = (() => {
     return 'http://127.0.0.1:8000/api';
   }
   // Change the fallback to your new Render URL!
-  return 'https://dietprep-backend.onrender.com/api';
+  return 'https://dietprep1.onrender.com/api';
 })();
 
 // ── IN-MEMORY STATE (hydrated from backend on load) ─────────────
