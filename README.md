@@ -70,4 +70,4 @@ the file to open it in your browser.
   browser for the report text; this is unrelated to the new Python backend.
 live link:
 ## 🚀 Live Demo
-Try it here: [DietPrep Live Demo](https://your-deployed-url.herokuapp.com)
+Try it here: https://dietprep1-q42qakfu1-diet-prep.vercel.app
